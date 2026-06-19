@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Dänisch-Vokabeltrainer</title>
+<title>Vokabeltrainer</title>
 <style>
 body { font-family: Arial; max-width: 600px; margin: 40px auto; }
 button { margin: 5px; padding: 10px; }
@@ -13,13 +13,13 @@ input { padding: 10px; width: 90%; font-size: 18px; }
 </head>
 <body>
 
-<h1>Dänisch-Vokabeltrainer</h1>
+<h1>Vokabeltrainer</h1>
 
 <p>Modus wählen:</p>
-<button onclick="start(1)">Dänisch → Deutsch</button>
-<button onclick="start(2)">Deutsch → Dänisch</button>
-<button onclick="start(3)">Multiple Choice DA → DE</button>
-<button onclick="start(4)">Multiple Choice DE → DA</button>
+<button onclick="start(1)">Englisch → Deutsch</button>
+<button onclick="start(2)">Deutsch → Englisch</button>
+<button onclick="start(3)">Multiple Choice EN → DE</button>
+<button onclick="start(4)">Multiple Choice DE → EN</button>
 
 <hr>
 
@@ -51,7 +51,7 @@ fetch("vocab.txt")
                 let parts = line.split("\t");
                 if (parts.length !== 2) return null;
                 return {
-                    da: parts[0].trim(),
+                    en: parts[0].trim(),
                     de: parts[1].split(";").map(x => x.trim())
                 };
             })
@@ -66,11 +66,6 @@ function shuffle(array) {
 }
 
 function start(selectedMode) {
-    if (vocab.length === 0) {
-        document.getElementById("progress").innerText = "Keine Vokabeln geladen.";
-        return;
-    }
-
     mode = selectedMode;
     order = shuffle([...vocab]);
     index = 0;
@@ -94,7 +89,7 @@ function nextQuestion() {
 
     if (mode === 1) {
         correctSolutions = current.de.map(x => x.toLowerCase());
-        document.getElementById("question").innerText = current.da + " →";
+        document.getElementById("question").innerText = current.en + " →";
         document.getElementById("answerArea").innerHTML =
             `<input id="answer" autofocus onkeydown="if(event.key==='Enter') checkTextAnswer()">
              <br><button onclick="checkTextAnswer()">Prüfen</button>`;
@@ -103,7 +98,7 @@ function nextQuestion() {
 
     if (mode === 2) {
         let de = current.de[Math.floor(Math.random() * current.de.length)];
-        correctSolutions = [current.da.toLowerCase()];
+        correctSolutions = [current.en.toLowerCase()];
         document.getElementById("question").innerText = de + " →";
         document.getElementById("answerArea").innerHTML =
             `<input id="answer" autofocus onkeydown="if(event.key==='Enter') checkTextAnswer()">
@@ -113,19 +108,19 @@ function nextQuestion() {
 
     if (mode === 3) {
         let correctDe = current.de[Math.floor(Math.random() * current.de.length)];
-        let wrong = shuffle(vocab.filter(v => v.da !== current.da)).slice(0, 3);
+        let wrong = shuffle(vocab.filter(v => v.en !== current.en)).slice(0, 3);
         currentOptions = shuffle([correctDe, ...wrong.map(w => w.de[0])]);
         correctSolutions = [correctDe];
 
-        document.getElementById("question").innerText = current.da + " →";
+        document.getElementById("question").innerText = current.en + " →";
         showOptions();
     }
 
     if (mode === 4) {
         let de = current.de[Math.floor(Math.random() * current.de.length)];
-        let wrong = shuffle(vocab.filter(v => v.da !== current.da)).slice(0, 3);
-        currentOptions = shuffle([current.da, ...wrong.map(w => w.da)]);
-        correctSolutions = [current.da];
+        let wrong = shuffle(vocab.filter(v => v.en !== current.en)).slice(0, 3);
+        currentOptions = shuffle([current.en, ...wrong.map(w => w.en)]);
+        correctSolutions = [current.en];
 
         document.getElementById("question").innerText = de + " →";
         showOptions();
@@ -146,7 +141,7 @@ function showOptions() {
 function checkTextAnswer() {
     let answer = document.getElementById("answer").value.trim().toLowerCase();
 
-    if (correctSolutions.map(x => x.toLowerCase()).includes(answer)) {
+    if (correctSolutions.includes(answer)) {
         correct++;
         document.getElementById("feedback").innerHTML = `<span class="correct">✔ richtig</span>`;
     } else {

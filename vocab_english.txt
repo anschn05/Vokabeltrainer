@@ -1,0 +1,60 @@
+advantage	Vorteil; Nutzen
+disadvantage	Nachteil; Schwäche
+benefit	Vorteil; Nutzen
+drawback	Nachteil; Nachteilspunkt
+impact	Auswirkung; Einfluss
+effect	Wirkung; Effekt
+influence	Einfluss; Beeinflussung
+increase	erhöhen; steigern; zunehmen
+decrease	verringern; reduzieren; abnehmen
+improve	verbessern; steigern
+worsen	verschlechtern; verschlimmern
+lead to	führen zu; verursachen
+result in	resultieren in; führen zu
+cause	verursachen; bewirken
+solution	Lösung; Ansatz
+approach	Ansatz; Herangehensweise
+issue	Problem; Thema
+challenge	Herausforderung; Schwierigkeit
+opportunity	Chance; Möglichkeit
+development	Entwicklung; Fortschritt
+trend	Trend; Entwicklung
+significant	bedeutend; wesentlich
+considerable	erheblich; beträchtlich
+minor	gering; unbedeutend
+major	wesentlich; bedeutend
+overall	insgesamt; insgesamt gesehen
+in conclusion	abschließend; zusammenfassend
+to sum up	zusammenfassend; abschließend
+on the one hand	einerseits
+on the other hand	andererseits
+however	jedoch; allerdings
+therefore	daher; deshalb
+moreover	darüber hinaus; außerdem
+furthermore	zudem; weiterhin
+in addition	zusätzlich; darüber hinaus
+for example	zum Beispiel; beispielsweise
+for instance	beispielsweise; etwa
+as a result	infolgedessen; als Ergebnis
+in contrast	im Gegensatz dazu
+compared to	im Vergleich zu
+according to	laut; gemäß
+it is evident that	es ist offensichtlich, dass
+it can be argued that	es kann argumentiert werden, dass
+this suggests that	dies deutet darauf hin, dass
+this shows that	dies zeigt, dass
+a key factor	ein entscheidender Faktor
+a major reason	ein Hauptgrund
+a possible explanation	eine mögliche Erklärung
+data shows that	Daten zeigen, dass
+the chart illustrates	Die Grafik zeigt
+the graph indicates	Die Grafik deutet darauf hin
+the number of	die Anzahl von
+the percentage of	der Prozentsatz von
+a rise in	ein Anstieg von
+a decline in	ein Rückgang von
+remain stable	stabil bleiben; konstant bleiben
+fluctuate	schwanken; variieren
+reach a peak	einen Höhepunkt erreichen
+drop sharply	stark abfallen; drastisch sinken
+increase steadily	stetig steigen

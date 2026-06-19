@@ -1,60 +1,100 @@
-advantage	Vorteil; Nutzen
-disadvantage	Nachteil; Schwäche
-benefit	Vorteil; Nutzen
-drawback	Nachteil; Nachteilspunkt
-impact	Auswirkung; Einfluss
-effect	Wirkung; Effekt
-influence	Einfluss; Beeinflussung
-increase	erhöhen; steigern; zunehmen
-decrease	verringern; reduzieren; abnehmen
-improve	verbessern; steigern
-worsen	verschlechtern; verschlimmern
-lead to	führen zu; verursachen
-result in	resultieren in; führen zu
-cause	verursachen; bewirken
-solution	Lösung; Ansatz
-approach	Ansatz; Herangehensweise
-issue	Problem; Thema
-challenge	Herausforderung; Schwierigkeit
-opportunity	Chance; Möglichkeit
-development	Entwicklung; Fortschritt
-trend	Trend; Entwicklung
-significant	bedeutend; wesentlich
-considerable	erheblich; beträchtlich
-minor	gering; unbedeutend
-major	wesentlich; bedeutend
-overall	insgesamt; insgesamt gesehen
-in conclusion	abschließend; zusammenfassend
-to sum up	zusammenfassend; abschließend
-on the one hand	einerseits
-on the other hand	andererseits
-however	jedoch; allerdings
-therefore	daher; deshalb
-moreover	darüber hinaus; außerdem
-furthermore	zudem; weiterhin
-in addition	zusätzlich; darüber hinaus
-for example	zum Beispiel; beispielsweise
-for instance	beispielsweise; etwa
-as a result	infolgedessen; als Ergebnis
-in contrast	im Gegensatz dazu
-compared to	im Vergleich zu
-according to	laut; gemäß
-it is evident that	es ist offensichtlich, dass
-it can be argued that	es kann argumentiert werden, dass
-this suggests that	dies deutet darauf hin, dass
-this shows that	dies zeigt, dass
-a key factor	ein entscheidender Faktor
-a major reason	ein Hauptgrund
-a possible explanation	eine mögliche Erklärung
-data shows that	Daten zeigen, dass
-the chart illustrates	Die Grafik zeigt
-the graph indicates	Die Grafik deutet darauf hin
-the number of	die Anzahl von
-the percentage of	der Prozentsatz von
-a rise in	ein Anstieg von
-a decline in	ein Rückgang von
-remain stable	stabil bleiben; konstant bleiben
-fluctuate	schwanken; variieren
-reach a peak	einen Höhepunkt erreichen
-drop sharply	stark abfallen; drastisch sinken
-increase steadily	stetig steigen
+hej	hallo
+farvel	auf wiedersehen
+ja	ja
+nej	nein
+tak	danke
+mange tak	vielen dank
+undskyld	entschuldigung
+vær så god	bitte
+godmorgen	guten Morgen
+godaften	guten Abend
+godnat	gute Nacht
+hvordan går det	wie geht es dir
+jeg har det godt	mir geht es gut
+hvad hedder du	wie heißt du
+jeg hedder	ich heiße
+mand	Mann
+kvinde	Frau
+barn	Kind
+familie	Familie
+ven	Freund
+hus	Haus
+lejlighed	Wohnung
+værelse	Zimmer
+dør	Tür
+vindue	Fenster
+bord	Tisch
+stol	Stuhl
+seng	Bett
+køkken	Küche
+bad	Badezimmer
+mad	Essen
+brød	Brot
+vand	Wasser
+mælk	Milch
+kaffe	Kaffee
+te	Tee
+øl	Bier
+vin	Wein
+æble	Apfel
+ost	Käse
+morgen	Morgen
+dag	Tag
+uge	Woche
+måned	Monat
+år	Jahr
+i dag	heute
+i morgen	morgen
+i går	gestern
+nu	jetzt
+senere	später
+en	eins
+to	zwei
+tre	drei
+fire	vier
+fem	fünf
+seks	sechs
+syv	sieben
+otte	acht
+ni	neun
+ti	zehn
+stor	groß
+lille	klein
+god	gut
+dårlig	schlecht
+varm	warm
+kold	kalt
+hurtig	schnell
+langsom	langsam
+ny	neu
+gammel	alt
+at være	sein
+at have	haben
+at gøre	machen
+at gå	gehen
+at komme	kommen
+at se	sehen
+at høre	hören
+at spise	essen
+at drikke	trinken
+at arbejde	arbeiten
+skole	Schule
+arbejde	Arbeit
+butik	Geschäft
+station	Bahnhof
+vej	Straße
+bil	Auto
+cykel	Fahrrad
+tog	Zug
+bus	Bus
+fly	Flugzeug
+penge	Geld
+pris	Preis
+hotel	Hotel
+strand	Strand
+hav	Meer
+sol	Sonne
+regn	Regen
+sne	Schnee
+hjælp	Hilfe
+læge	Arzt
