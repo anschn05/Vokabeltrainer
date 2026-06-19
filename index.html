@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Vokabeltrainer</title>
+<style>
+body { font-family: Arial; max-width: 600px; margin: 40px auto; }
+button { margin: 5px; padding: 10px; }
+input { padding: 10px; width: 90%; font-size: 18px; }
+.correct { color: green; font-weight: bold; }
+.wrong { color: red; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<h1>Vokabeltrainer</h1>
+
+<p>Modus wählen:</p>
+<button onclick="start(1)">Englisch → Deutsch</button>
+<button onclick="start(2)">Deutsch → Englisch</button>
+<button onclick="start(3)">Multiple Choice EN → DE</button>
+<button onclick="start(4)">Multiple Choice DE → EN</button>
+
+<hr>
+
+<h2 id="question">Bitte Modus wählen</h2>
+
+<div id="answerArea"></div>
+
+<p id="feedback"></p>
+<p id="progress"></p>
+
+<script>
+let vocab = [];
+let order = [];
+let index = 0;
+let correct = 0;
+let mistakes = 0;
+let mode = 1;
+let current = null;
+let correctSolutions = [];
+let currentOptions = [];
+
+fetch("vocab.txt")
+    .then(r => r.text())
+    .then(text => {
+        vocab = text.split("\n")
+            .map(line => line.trim())
+            .filter(line => line && !line.startsWith("#"))
+            .map(line => {
+                let parts = line.split("\t");
+                if (parts.length !== 2) return null;
+                return {
+                    en: parts[0].trim(),
+                    de: parts[1].split(";").map(x => x.trim())
+                };
+            })
+            .filter(x => x !== null);
+
+        document.getElementById("progress").innerText =
+            vocab.length + " Vokabeln geladen.";
+    });
+
+function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+function start(selectedMode) {
+    mode = selectedMode;
+    order = shuffle([...vocab]);
+    index = 0;
+    correct = 0;
+    mistakes = 0;
+    nextQuestion();
+}
+
+function nextQuestion() {
+    document.getElementById("feedback").innerText = "";
+
+    if (index >= order.length) {
+        document.getElementById("question").innerText = "Fertig!";
+        document.getElementById("answerArea").innerHTML = "";
+        document.getElementById("progress").innerText =
+            `Endergebnis: ${correct}/${order.length} | Fehler: ${mistakes}`;
+        return;
+    }
+
+    current = order[index];
+
+    if (mode === 1) {
+        correctSolutions = current.de.map(x => x.toLowerCase());
+        document.getElementById("question").innerText = current.en + " →";
+        document.getElementById("answerArea").innerHTML =
+            `<input id="answer" autofocus onkeydown="if(event.key==='Enter') checkTextAnswer()">
+             <br><button onclick="checkTextAnswer()">Prüfen</button>`;
+        document.getElementById("answer").focus();
+    }
+
+    if (mode === 2) {
+        let de = current.de[Math.floor(Math.random() * current.de.length)];
+        correctSolutions = [current.en.toLowerCase()];
+        document.getElementById("question").innerText = de + " →";
+        document.getElementById("answerArea").innerHTML =
+            `<input id="answer" autofocus onkeydown="if(event.key==='Enter') checkTextAnswer()">
+             <br><button onclick="checkTextAnswer()">Prüfen</button>`;
+        document.getElementById("answer").focus();
+    }
+
+    if (mode === 3) {
+        let correctDe = current.de[Math.floor(Math.random() * current.de.length)];
+        let wrong = shuffle(vocab.filter(v => v.en !== current.en)).slice(0, 3);
+        currentOptions = shuffle([correctDe, ...wrong.map(w => w.de[0])]);
+        correctSolutions = [correctDe];
+
+        document.getElementById("question").innerText = current.en + " →";
+        showOptions();
+    }
+
+    if (mode === 4) {
+        let de = current.de[Math.floor(Math.random() * current.de.length)];
+        let wrong = shuffle(vocab.filter(v => v.en !== current.en)).slice(0, 3);
+        currentOptions = shuffle([current.en, ...wrong.map(w => w.en)]);
+        correctSolutions = [current.en];
+
+        document.getElementById("question").innerText = de + " →";
+        showOptions();
+    }
+
+    document.getElementById("progress").innerText =
+        `Fortschritt: ${index}/${order.length} | Richtig: ${correct} | Fehler: ${mistakes}`;
+}
+
+function showOptions() {
+    let html = "";
+    currentOptions.forEach((opt, i) => {
+        html += `<button onclick="checkMcAnswer('${opt.replace(/'/g, "\\'")}')">${i+1}: ${opt}</button><br>`;
+    });
+    document.getElementById("answerArea").innerHTML = html;
+}
+
+function checkTextAnswer() {
+    let answer = document.getElementById("answer").value.trim().toLowerCase();
+
+    if (correctSolutions.includes(answer)) {
+        correct++;
+        document.getElementById("feedback").innerHTML = `<span class="correct">✔ richtig</span>`;
+    } else {
+        mistakes++;
+        document.getElementById("feedback").innerHTML =
+            `<span class="wrong">✘ richtig: ${correctSolutions.join(", ")}</span>`;
+    }
+
+    index++;
+    setTimeout(nextQuestion, 900);
+}
+
+function checkMcAnswer(answer) {
+    if (correctSolutions.includes(answer)) {
+        correct++;
+        document.getElementById("feedback").innerHTML = `<span class="correct">✔ richtig</span>`;
+    } else {
+        mistakes++;
+        document.getElementById("feedback").innerHTML =
+            `<span class="wrong">✘ richtig: ${correctSolutions.join(", ")}</span>`;
+    }
+
+    index++;
+    setTimeout(nextQuestion, 900);
+}
+</script>
+
+</body>
+</html>
