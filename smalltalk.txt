@@ -1,0 +1,50 @@
+hej	hallo
+godmorgen	guten Morgen
+godaften	guten Abend
+farvel	auf Wiedersehen
+tak	danke
+mange tak	vielen Dank
+undskyld	entschuldigung
+vær så god	bitte
+hvordan går det	wie geht es dir
+jeg har det godt	mir geht es gut
+hvad hedder du	wie heißt du
+jeg hedder	ich heiße
+hvor kommer du fra	woher kommst du
+jeg kommer fra	ich komme aus
+hvor bor du	wo wohnst du
+jeg bor i	ich wohne in
+hvor gammel er du	wie alt bist du
+arbejde	Arbeit
+studere	studieren
+familie	Familie
+mand	Mann
+kvinde	Frau
+barn	Kind
+søn	Sohn
+datter	Tochter
+ven	Freund
+kæreste	Partner
+gift	verheiratet
+single	Single
+vejret	Wetter
+sol	Sonne
+regn	Regen
+koldt	kalt
+varmt	warm
+dejligt	schön
+weekend	Wochenende
+ferie	Urlaub
+rejse	Reise
+interesse	Interesse
+hobby	Hobby
+sport	Sport
+musik	Musik
+film	Film
+bog	Buch
+sprog	Sprache
+dansk	Dänisch
+tysk	Deutsch
+engelsk	Englisch
+hyggeligt	gemütlich
+vi ses	bis bald

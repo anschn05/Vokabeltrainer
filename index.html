@@ -4,18 +4,23 @@
 <meta charset="UTF-8">
 <title>Dänisch-Vokabeltrainer</title>
 <style>
-body { font-family: Arial; max-width: 600px; margin: 40px auto; }
-button { margin: 5px; padding: 10px; }
+body { font-family: Arial; max-width: 700px; margin: 40px auto; }
+button { margin: 5px; padding: 10px; font-size: 16px; }
 input { padding: 10px; width: 90%; font-size: 18px; }
 .correct { color: green; font-weight: bold; }
 .wrong { color: red; font-weight: bold; }
+.info { color: #555; }
 </style>
 </head>
 <body>
 
 <h1>Dänisch-Vokabeltrainer</h1>
 
-<p>Modus wählen:</p>
+<h3>1. Vokabeldatei wählen</h3>
+<select id="fileSelect"></select>
+<button onclick="loadSelectedFile()">Datei laden</button>
+
+<h3>2. Modus wählen</h3>
 <button onclick="start(1)">Dänisch → Deutsch</button>
 <button onclick="start(2)">Deutsch → Dänisch</button>
 <button onclick="start(3)">Multiple Choice DA → DE</button>
@@ -23,8 +28,7 @@ input { padding: 10px; width: 90%; font-size: 18px; }
 
 <hr>
 
-<h2 id="question">Bitte Modus wählen</h2>
-
+<h2 id="question">Bitte Datei laden und Modus wählen</h2>
 <div id="answerArea"></div>
 
 <p id="feedback"></p>
@@ -41,33 +45,79 @@ let current = null;
 let correctSolutions = [];
 let currentOptions = [];
 
-fetch("vocab.txt")
-    .then(r => r.text())
-    .then(text => {
-        vocab = text.split("\n")
-            .map(line => line.trim())
-            .filter(line => line && !line.startsWith("#"))
-            .map(line => {
-                let parts = line.split("\t");
-                if (parts.length !== 2) return null;
-                return {
-                    da: parts[0].trim(),
-                    de: parts[1].split(";").map(x => x.trim())
-                };
-            })
-            .filter(x => x !== null);
+let wrongBuffer = [];
+let allWrong = [];
+let phase = "normal";   // normal, retry10, finalRetry
 
+// ---------------- Dateien laden ----------------
+
+fetch("vocab_files.json")
+    .then(r => r.json())
+    .then(files => {
+        const sel = document.getElementById("fileSelect");
+        files.forEach(file => {
+            let opt = document.createElement("option");
+            opt.value = file;
+            opt.textContent = file;
+            sel.appendChild(opt);
+        });
+    })
+    .catch(() => {
         document.getElementById("progress").innerText =
-            vocab.length + " Vokabeln geladen.";
+            "vocab_files.json nicht gefunden.";
     });
 
-function shuffle(array) {
-    return array.sort(() => Math.random() - 0.5);
+function loadSelectedFile() {
+    const filename = document.getElementById("fileSelect").value;
+
+    fetch(filename)
+        .then(r => r.text())
+        .then(text => {
+            vocab = text.split("\n")
+                .map(line => line.trim())
+                .filter(line => line && !line.startsWith("#"))
+                .map(line => {
+                    let parts = line.split("\t");
+                    if (parts.length !== 2) return null;
+                    return {
+                        da: parts[0].trim(),
+                        de: parts[1].split(";").map(x => x.trim())
+                    };
+                })
+                .filter(x => x !== null);
+
+            document.getElementById("question").innerText =
+                filename + " geladen.";
+            document.getElementById("progress").innerText =
+                vocab.length + " Vokabeln geladen.";
+            document.getElementById("answerArea").innerHTML = "";
+        });
 }
+
+// ---------------- Hilfsfunktionen ----------------
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function addWrong(word) {
+    wrongBuffer.push(word);
+
+    if (!allWrong.some(w => w.da === word.da)) {
+        allWrong.push(word);
+    }
+}
+
+// ---------------- Start ----------------
 
 function start(selectedMode) {
     if (vocab.length === 0) {
-        document.getElementById("progress").innerText = "Keine Vokabeln geladen.";
+        document.getElementById("progress").innerText =
+            "Bitte zuerst eine Vokabeldatei laden.";
         return;
     }
 
@@ -76,18 +126,42 @@ function start(selectedMode) {
     index = 0;
     correct = 0;
     mistakes = 0;
+    wrongBuffer = [];
+    allWrong = [];
+    phase = "normal";
+
     nextQuestion();
 }
+
+// ---------------- Fragen ----------------
 
 function nextQuestion() {
     document.getElementById("feedback").innerText = "";
 
     if (index >= order.length) {
-        document.getElementById("question").innerText = "Fertig!";
-        document.getElementById("answerArea").innerHTML = "";
-        document.getElementById("progress").innerText =
-            `Endergebnis: ${correct}/${order.length} | Fehler: ${mistakes}`;
-        return;
+
+        if (phase === "normal" && wrongBuffer.length > 0) {
+            order = shuffle([...wrongBuffer]);
+            wrongBuffer = [];
+            index = 0;
+            phase = "retry10";
+            document.getElementById("feedback").innerHTML =
+                `<span class="info">Wiederholung der letzten Fehler</span>`;
+        }
+        else if (phase !== "finalRetry" && allWrong.length > 0) {
+            order = shuffle([...allWrong]);
+            index = 0;
+            phase = "finalRetry";
+            document.getElementById("feedback").innerHTML =
+                `<span class="info">Finale Wiederholung aller falsch beantworteten Wörter</span>`;
+        }
+        else {
+            document.getElementById("question").innerText = "Fertig!";
+            document.getElementById("answerArea").innerHTML = "";
+            document.getElementById("progress").innerText =
+                `Endergebnis: ${correct} richtig | Fehler gesamt: ${mistakes}`;
+            return;
+        }
     }
 
     current = order[index];
@@ -95,20 +169,14 @@ function nextQuestion() {
     if (mode === 1) {
         correctSolutions = current.de.map(x => x.toLowerCase());
         document.getElementById("question").innerText = current.da + " →";
-        document.getElementById("answerArea").innerHTML =
-            `<input id="answer" autofocus onkeydown="if(event.key==='Enter') checkTextAnswer()">
-             <br><button onclick="checkTextAnswer()">Prüfen</button>`;
-        document.getElementById("answer").focus();
+        showInput();
     }
 
     if (mode === 2) {
         let de = current.de[Math.floor(Math.random() * current.de.length)];
         correctSolutions = [current.da.toLowerCase()];
         document.getElementById("question").innerText = de + " →";
-        document.getElementById("answerArea").innerHTML =
-            `<input id="answer" autofocus onkeydown="if(event.key==='Enter') checkTextAnswer()">
-             <br><button onclick="checkTextAnswer()">Prüfen</button>`;
-        document.getElementById("answer").focus();
+        showInput();
     }
 
     if (mode === 3) {
@@ -132,45 +200,69 @@ function nextQuestion() {
     }
 
     document.getElementById("progress").innerText =
-        `Fortschritt: ${index}/${order.length} | Richtig: ${correct} | Fehler: ${mistakes}`;
+        `Phase: ${phase} | Fortschritt: ${index}/${order.length} | Richtig: ${correct} | Fehler: ${mistakes}`;
+}
+
+function showInput() {
+    document.getElementById("answerArea").innerHTML =
+        `<input id="answer" autofocus onkeydown="if(event.key==='Enter') checkTextAnswer()">
+         <br><button onclick="checkTextAnswer()">Prüfen</button>`;
+    document.getElementById("answer").focus();
 }
 
 function showOptions() {
     let html = "";
     currentOptions.forEach((opt, i) => {
-        html += `<button onclick="checkMcAnswer('${opt.replace(/'/g, "\\'")}')">${i+1}: ${opt}</button><br>`;
+        html += `<button onclick="checkMcAnswer(${i})">${i + 1}: ${opt}</button><br>`;
     });
     document.getElementById("answerArea").innerHTML = html;
 }
 
+// ---------------- Antworten prüfen ----------------
+
 function checkTextAnswer() {
     let answer = document.getElementById("answer").value.trim().toLowerCase();
 
-    if (correctSolutions.map(x => x.toLowerCase()).includes(answer)) {
-        correct++;
-        document.getElementById("feedback").innerHTML = `<span class="correct">✔ richtig</span>`;
-    } else {
-        mistakes++;
-        document.getElementById("feedback").innerHTML =
-            `<span class="wrong">✘ richtig: ${correctSolutions.join(", ")}</span>`;
-    }
-
-    index++;
-    setTimeout(nextQuestion, 900);
-}
-
-function checkMcAnswer(answer) {
     if (correctSolutions.includes(answer)) {
         correct++;
-        document.getElementById("feedback").innerHTML = `<span class="correct">✔ richtig</span>`;
+        document.getElementById("feedback").innerHTML =
+            `<span class="correct">✔ richtig</span>`;
     } else {
         mistakes++;
+        addWrong(current);
         document.getElementById("feedback").innerHTML =
             `<span class="wrong">✘ richtig: ${correctSolutions.join(", ")}</span>`;
     }
 
+    afterAnswer();
+}
+
+function checkMcAnswer(optionIndex) {
+    let answer = currentOptions[optionIndex];
+
+    if (correctSolutions.includes(answer)) {
+        correct++;
+        document.getElementById("feedback").innerHTML =
+            `<span class="correct">✔ richtig</span>`;
+    } else {
+        mistakes++;
+        addWrong(current);
+        document.getElementById("feedback").innerHTML =
+            `<span class="wrong">✘ richtig: ${correctSolutions.join(", ")}</span>`;
+    }
+
+    afterAnswer();
+}
+
+function afterAnswer() {
     index++;
-    setTimeout(nextQuestion, 900);
+
+    if (phase === "normal" && index % 10 === 0 && wrongBuffer.length > 0) {
+        order.splice(index, 0, ...shuffle([...wrongBuffer]));
+        wrongBuffer = [];
+    }
+
+    setTimeout(nextQuestion, 700);
 }
 </script>
 
